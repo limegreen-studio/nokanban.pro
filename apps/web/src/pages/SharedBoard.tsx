@@ -1,6 +1,5 @@
 import { ExportDialog } from '@/components/dialogs/ExportDialog'
 import { PinPromptDialog } from '@/components/dialogs/PinPromptDialog'
-import { ShareDialog } from '@/components/dialogs/ShareDialog'
 import { KanbanBoard } from '@/components/kanban/KanbanBoard'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,7 +20,6 @@ export function SharedBoard() {
   const { name } = useParams<{ name: string }>()
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
-  const [showShare, setShowShare] = React.useState(false)
   const [showExport, setShowExport] = React.useState(false)
   const [showPinPrompt, setShowPinPrompt] = React.useState(false)
   const [pinError, setPinError] = React.useState<string | null>(null)
@@ -113,9 +111,9 @@ export function SharedBoard() {
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
-      <header className="border-b bg-background self-center mt-0 md:mt-4 shadow-2xl/20 shadow-neutral-400 w-full md:w-[80vw] md:rounded-3xl">
+      <header className="self-center mt-0 md:mt-4 w-full md:w-[80vw]">
         <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ">
             <h1 className="text-xl font-bold">nokanban.pro</h1>
           </div>
 
@@ -123,7 +121,7 @@ export function SharedBoard() {
             <button
               onClick={toggleTheme}
               type="button"
-              className="w-10 h-10 rounded-full border-2 border-neutral-300 dark:border-neutral-700 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              className="w-10 h-10 rounded-full border-none border-2 border-neutral-300 dark:border-neutral-700 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
@@ -134,9 +132,9 @@ export function SharedBoard() {
             </button>
           </div>
         </div>
-        {pinError && (
+        {error && (
           <div className="border-t bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            {pinError}
+            {error}
           </div>
         )}
       </header>
@@ -144,7 +142,7 @@ export function SharedBoard() {
       {/* Board */}
       <div className="flex-1 overflow-hidden flex flex-col items-center">
         <div className="w-full md:max-w-[80%] flex flex-col h-full px-2 md:px-0">
-          <div className="w-full flex flex-row items-center justify-between gap-2">
+          <div className="w-full px-4 flex flex-row items-center justify-between gap-2">
             <h1
               className="flex-1 text-xl md:text-3xl font-bold tracking-wider text-start py-4 md:py-8 text-foreground"
               title={isPinSet ? 'Title editing not available on shared boards' : undefined}
@@ -158,21 +156,14 @@ export function SharedBoard() {
                   Unlock
                 </Button>
               )}
-              <Button
-                onClick={() => setShowShare(true)}
-                variant="default"
-                size="sm"
-                className="md:h-10"
-              >
-                Share
-              </Button>
               <PopoverRoot>
                 <PopoverTrigger>
                   <button
-                    className="w-10 h-10 rounded-full border-2 border-neutral-300 dark:border-neutral-700 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                    className="w-10 h-10 rounded-full border-2 flex items-center justify-center hover:opacity-80 transition-opacity"
+                    style={{ borderColor: '#FF7512' }}
                     type="button"
                   >
-                    <MoreVertical className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
+                    <MoreVertical className="w-5 h-5" style={{ color: '#FF7512' }} />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -182,6 +173,7 @@ export function SharedBoard() {
                       <Download className="w-4 h-4" />
                       <span>Export</span>
                     </PopoverButton>
+
                     {isPinSet && (
                       <>
                         <PopoverButton onClick={() => createColumn('New Column')}>
@@ -221,8 +213,6 @@ export function SharedBoard() {
           </div>
         </div>
       </div>
-
-      <ShareDialog open={showShare} onOpenChange={setShowShare} boardName={name || ''} />
 
       <ExportDialog
         open={showExport}

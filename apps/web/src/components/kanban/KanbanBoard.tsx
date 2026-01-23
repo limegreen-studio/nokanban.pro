@@ -256,7 +256,7 @@ export function KanbanBoard({
   }
 
   return (
-    <div className="flex h-full gap-3 md:gap-4 overflow-x-auto p-2 md:p-4 pb-4 md:justify-center">
+    <div className="flex h-full gap-3 md:gap-4 overflow-x-auto p-2 md:p-4 pb-4">
       {columns.map((column) => {
         const isDropActive =
           dropTarget?.columnId === column.id && draggedCard?.sourceColumnId !== column.id
@@ -281,7 +281,7 @@ export function KanbanBoard({
                 {editingColumn === column.id ? (
                   <input
                     defaultValue={column.title}
-                    className="flex-1 rounded border border-neutral-300 dark:border-neutral-700 px-2 py-1 text-sm font-semibold bg-white dark:bg-neutral-950"
+                    className="w-0 flex-1 rounded border border-neutral-300 dark:border-neutral-700 px-2 py-1 text-sm font-semibold bg-white dark:bg-neutral-950"
                     onBlur={(e) => handleUpdateColumnTitle(column.id, e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -458,70 +458,6 @@ export function KanbanBoard({
           </div>
         )
       })}
-
-      {/* Add Column */}
-      {!readOnly && (
-        <div className="flex flex-col min-w-[260px] md:min-w-[280px]">
-          {showAddColumn ? (
-            <div className="rounded-xl bg-neutral-100 dark:bg-neutral-900 p-3">
-              <form onSubmit={handleAddColumn}>
-                <input
-                  name="columnTitle"
-                  placeholder="Enter column title..."
-                  className="mb-2 w-full rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 px-3 py-2 text-sm outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
-                />
-                <div className="flex gap-2">
-                  <button
-                    type="submit"
-                    className="rounded bg-neutral-900 dark:bg-neutral-100 px-3 py-1.5 text-xs font-medium text-white dark:text-neutral-900 transition-colors hover:bg-neutral-800 dark:hover:bg-neutral-200"
-                  >
-                    Add Column
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddColumn(false)}
-                    className="rounded p-1.5 text-neutral-500 dark:text-neutral-400 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100"
-                    aria-label="Cancel"
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <title>Cancel</title>
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </button>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setShowAddColumn(true)}
-              className="flex w-full items-center justify-center gap-1 rounded-xl bg-neutral-100 dark:bg-neutral-900 p-3 text-sm font-medium text-neutral-500 dark:text-neutral-400 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <title>Add</title>
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Add column
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Move Card Menu */}
       {moveCardMenu && (

@@ -75,16 +75,18 @@ export function PinPromptDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md bg-black text-white border border-neutral-800">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogTitle className="text-white">{title}</DialogTitle>
+          <DialogDescription className="text-neutral-400">{description}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
             <div className="space-y-3">
-              <Label htmlFor={id}>PIN</Label>
+              <Label htmlFor={id} className="text-white">
+                PIN
+              </Label>
               <div className="flex justify-center">
                 <InputOTP
                   id={id}
@@ -97,36 +99,57 @@ export function PinPromptDialog({
                   <InputOTPGroup className="gap-3">
                     <InputOTPSlot
                       index={0}
-                      className="h-14 w-14 rounded-lg border-2 border-input text-lg font-semibold"
+                      className="h-14 w-14 rounded-lg border-2 border-neutral-700 bg-transparent text-lg font-semibold text-white focus:border-orange-500"
+                      style={{ borderColor: pin.length > 0 ? '#FF7512' : undefined }}
                     />
                     <InputOTPSlot
                       index={1}
-                      className="h-14 w-14 rounded-lg border-2 border-input text-lg font-semibold"
+                      className="h-14 w-14 rounded-lg border-2 border-neutral-700 bg-transparent text-lg font-semibold text-white focus:border-orange-500"
+                      style={{ borderColor: pin.length > 1 ? '#FF7512' : undefined }}
                     />
                     <InputOTPSlot
                       index={2}
-                      className="h-14 w-14 rounded-lg border-2 border-input text-lg font-semibold"
+                      className="h-14 w-14 rounded-lg border-2 border-neutral-700 bg-transparent text-lg font-semibold text-white focus:border-orange-500"
+                      style={{ borderColor: pin.length > 2 ? '#FF7512' : undefined }}
                     />
                     <InputOTPSlot
                       index={3}
-                      className="h-14 w-14 rounded-lg border-2 border-input text-lg font-semibold"
+                      className="h-14 w-14 rounded-lg border-2 border-neutral-700 bg-transparent text-lg font-semibold text-white focus:border-orange-500"
+                      style={{ borderColor: pin.length > 3 ? '#FF7512' : undefined }}
                     />
                   </InputOTPGroup>
                 </InputOTP>
               </div>
-              {error && <p className="text-sm text-destructive text-center">{error}</p>}
+              {error && (
+                <p className="text-sm text-center" style={{ color: '#FF7512' }}>
+                  {error}
+                </p>
+              )}
             </div>
 
-            <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+            <div
+              className="rounded-md p-3 text-sm text-neutral-400"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+            >
               <p>The PIN is required to make any changes to the board.</p>
             </div>
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-neutral-700 text-white hover:bg-neutral-800"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={pin.length !== 4}>
+            <Button
+              type="submit"
+              disabled={pin.length !== 4}
+              style={{ backgroundColor: '#FF7512' }}
+              className="hover:opacity-90"
+            >
               Unlock
             </Button>
           </DialogFooter>

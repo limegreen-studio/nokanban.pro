@@ -62,9 +62,13 @@ export function New() {
         })
 
         // Create default 3 columns: To-do, In Progress, Done
+        const todoColId = ulid()
+        const inProgressColId = ulid()
+        const doneColId = ulid()
+
         await db.columns.bulkAdd([
           {
-            id: ulid(),
+            id: todoColId,
             boardId: DEFAULT_BOARD_ID,
             title: 'To-do',
             position: 0,
@@ -72,7 +76,7 @@ export function New() {
             updatedAt: now,
           },
           {
-            id: ulid(),
+            id: inProgressColId,
             boardId: DEFAULT_BOARD_ID,
             title: 'In Progress',
             position: 1,
@@ -80,9 +84,88 @@ export function New() {
             updatedAt: now,
           },
           {
-            id: ulid(),
+            id: doneColId,
             boardId: DEFAULT_BOARD_ID,
             title: 'Done',
+            position: 2,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ])
+
+        // Create 3 default cards for each column
+        await db.cards.bulkAdd([
+          // To-do cards
+          {
+            id: ulid(),
+            columnId: todoColId,
+            content: 'Task 1',
+            position: 0,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: todoColId,
+            content: 'Task 2',
+            position: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: todoColId,
+            content: 'Task 3',
+            position: 2,
+            createdAt: now,
+            updatedAt: now,
+          },
+          // In Progress cards
+          {
+            id: ulid(),
+            columnId: inProgressColId,
+            content: 'Task 1',
+            position: 0,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: inProgressColId,
+            content: 'Task 2',
+            position: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: inProgressColId,
+            content: 'Task 3',
+            position: 2,
+            createdAt: now,
+            updatedAt: now,
+          },
+          // Done cards
+          {
+            id: ulid(),
+            columnId: doneColId,
+            content: 'Task 1',
+            position: 0,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: doneColId,
+            content: 'Task 2',
+            position: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: doneColId,
+            content: 'Task 3',
             position: 2,
             createdAt: now,
             updatedAt: now,
@@ -103,7 +186,7 @@ export function New() {
     }
 
     createNewBoard()
-  }, [exportBoard, navigate])
+  }, [navigate, exportBoard])
 
   return (
     <div className="flex h-screen items-center justify-center">

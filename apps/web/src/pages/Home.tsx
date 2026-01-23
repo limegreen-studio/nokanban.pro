@@ -1,6 +1,6 @@
 import { ExportDialog } from '@/components/dialogs/ExportDialog'
 import { ImportDialog } from '@/components/dialogs/ImportDialog'
-import { PinPromptDialog } from '@/components/dialogs/PinPromptDialog'
+import { ShareDialog } from '@/components/dialogs/ShareDialog'
 import { KanbanBoard } from '@/components/kanban/KanbanBoard'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,7 +26,7 @@ const DEFAULT_BOARD_ID = 'home-board'
 export function Home() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
-  const [showPinPrompt, setShowPinPrompt] = React.useState(false)
+  const [showShare, setShowShare] = React.useState(false)
   const [showImport, setShowImport] = React.useState(false)
   const [showExport, setShowExport] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -66,9 +66,13 @@ export function Home() {
         })
 
         // Create default 3 columns: To-do, In Progress, Done
+        const todoColId = ulid()
+        const inProgressColId = ulid()
+        const doneColId = ulid()
+
         await db.columns.bulkAdd([
           {
-            id: ulid(),
+            id: todoColId,
             boardId: DEFAULT_BOARD_ID,
             title: 'To-do',
             position: 0,
@@ -76,7 +80,7 @@ export function Home() {
             updatedAt: now,
           },
           {
-            id: ulid(),
+            id: inProgressColId,
             boardId: DEFAULT_BOARD_ID,
             title: 'In Progress',
             position: 1,
@@ -84,9 +88,88 @@ export function Home() {
             updatedAt: now,
           },
           {
-            id: ulid(),
+            id: doneColId,
             boardId: DEFAULT_BOARD_ID,
             title: 'Done',
+            position: 2,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ])
+
+        // Create 3 default cards for each column
+        await db.cards.bulkAdd([
+          // To-do cards
+          {
+            id: ulid(),
+            columnId: todoColId,
+            content: 'Task 1',
+            position: 0,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: todoColId,
+            content: 'Task 2',
+            position: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: todoColId,
+            content: 'Task 3',
+            position: 2,
+            createdAt: now,
+            updatedAt: now,
+          },
+          // In Progress cards
+          {
+            id: ulid(),
+            columnId: inProgressColId,
+            content: 'Task 1',
+            position: 0,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: inProgressColId,
+            content: 'Task 2',
+            position: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: inProgressColId,
+            content: 'Task 3',
+            position: 2,
+            createdAt: now,
+            updatedAt: now,
+          },
+          // Done cards
+          {
+            id: ulid(),
+            columnId: doneColId,
+            content: 'Task 1',
+            position: 0,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: doneColId,
+            content: 'Task 2',
+            position: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: ulid(),
+            columnId: doneColId,
+            content: 'Task 3',
             position: 2,
             createdAt: now,
             updatedAt: now,
@@ -133,10 +216,10 @@ export function Home() {
   const handleShare = () => {
     if (!data) return
     setError(null)
-    setShowPinPrompt(true)
+    setShowShare(true)
   }
 
-  const handlePinSubmit = async (pin: string) => {
+  const handlePublishShare = async (pin: string) => {
     if (!data) return
 
     const boardName = slugify(data.board.title)
@@ -165,7 +248,7 @@ export function Home() {
       navigate(`/${boardName}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to share board')
-      setShowPinPrompt(false)
+      setShowShare(false)
     }
   }
 
@@ -197,7 +280,7 @@ export function Home() {
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
-      <header className="border-b bg-background self-center mt-0 md:mt-4 shadow-2xl/20 shadow-neutral-400 w-full md:w-[80vw] md:rounded-3xl">
+      <header className="self-center mt-0 md:mt-4 w-full md:w-[80vw]">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-4 ">
             <h1 className="text-xl font-bold">nokanban.pro</h1>
@@ -207,7 +290,7 @@ export function Home() {
             <button
               onClick={toggleTheme}
               type="button"
-              className="w-10 h-10 rounded-full border-2 border-neutral-300 dark:border-neutral-700 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              className="w-10 h-10 rounded-full border-none border-2 border-neutral-300 dark:border-neutral-700 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
@@ -228,7 +311,7 @@ export function Home() {
       {/* Board */}
       <div className="flex-1 overflow-hidden flex flex-col items-center">
         <div className="w-full md:max-w-[80%] flex flex-col h-full px-2 md:px-0">
-          <div className="w-full flex flex-row items-center justify-between gap-2">
+          <div className="w-full px-4 flex flex-row items-center justify-between gap-2">
             {editingTitle ? (
               <input
                 defaultValue={data.board.title}
@@ -252,22 +335,33 @@ export function Home() {
               </h1>
             )}
 
-            <div className="flex flex-row gap-1 md:gap-2 flex-shrink-0">
-              <Button onClick={handleShare} variant="default" size="sm" className="md:h-10">
+            <div className="flex flex-row gap-1 md:gap-2 shrink-0">
+              <Button
+                onClick={handleShare}
+                variant="default"
+                size="sm"
+                className="md:h-10"
+                style={{ backgroundColor: '#FF7512' }}
+              >
                 Share
               </Button>
               <PopoverRoot>
                 <PopoverTrigger>
                   <button
-                    className="w-10 h-10 rounded-full border-2 border-neutral-300 dark:border-neutral-700 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                    className="w-10 h-10 rounded-full border-2 flex items-center justify-center hover:opacity-80 transition-opacity"
+                    style={{ borderColor: '#FF7512' }}
                     type="button"
                   >
-                    <MoreVertical className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
+                    <MoreVertical className="w-5 h-5" style={{ color: '#FF7512' }} />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent>
                   <PopoverHeader>Quick Actions</PopoverHeader>
                   <PopoverBody>
+                    <PopoverButton onClick={() => createColumn('New Column')}>
+                      <Plus className="w-4 h-4" />
+                      <span>New Column</span>
+                    </PopoverButton>
                     <PopoverButton onClick={() => setShowImport(true)}>
                       <Upload className="w-4 h-4" />
                       <span>Import</span>
@@ -276,9 +370,9 @@ export function Home() {
                       <Download className="w-4 h-4" />
                       <span>Export</span>
                     </PopoverButton>
-                    <PopoverButton onClick={() => createColumn('New Column')}>
+                    <PopoverButton onClick={() => navigate('/new')}>
                       <Plus className="w-4 h-4" />
-                      <span>New Column</span>
+                      <span>New Board</span>
                     </PopoverButton>
                   </PopoverBody>
                 </PopoverContent>
@@ -303,13 +397,12 @@ export function Home() {
         </div>
       </div>
 
-      {/* PIN Prompt for sharing */}
-      <PinPromptDialog
-        open={showPinPrompt}
-        onOpenChange={setShowPinPrompt}
-        onSubmit={handlePinSubmit}
-        error={error || undefined}
-        mode="create"
+      {/* Share Dialog */}
+      <ShareDialog
+        open={showShare}
+        onOpenChange={setShowShare}
+        boardName={slugify(data?.board.title || '')}
+        onPublish={handlePublishShare}
       />
 
       <ImportDialog open={showImport} onOpenChange={setShowImport} onImport={handleImport} />
