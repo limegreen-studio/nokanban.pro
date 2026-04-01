@@ -17,7 +17,12 @@ interface ShareDialogProps {
   onPublish?: (pin: string) => void | Promise<void>
 }
 
-export function ShareDialog({ open, onOpenChange, boardName, onPublish }: ShareDialogProps) {
+export function ShareDialog({
+  open,
+  onOpenChange,
+  boardName: _boardName,
+  onPublish,
+}: ShareDialogProps) {
   const [password, setPassword] = React.useState('')
   const [isPublishing, setIsPublishing] = React.useState(false)
   const id = React.useId()

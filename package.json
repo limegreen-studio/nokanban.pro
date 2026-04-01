@@ -9,7 +9,7 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "dev": "pnpm --filter \"./apps/*\" --parallel --stream run dev",
     "dev:web": "pnpm --filter web dev",
     "dev:backend": "pnpm --filter backend dev",
     "build": "pnpm --recursive --filter \"./apps/*\" build",

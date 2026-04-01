@@ -31,7 +31,7 @@ interface KanbanBoardProps {
 
 export function KanbanBoard({
   columns,
-  onAddColumn,
+  onAddColumn: _onAddColumn,
   onUpdateColumnTitle,
   onDeleteColumn,
   onAddCard,
@@ -54,7 +54,7 @@ export function KanbanBoard({
   const [newCardTitle, setNewCardTitle] = React.useState('')
   const [editingCard, setEditingCard] = React.useState<string | null>(null)
   const [editingColumn, setEditingColumn] = React.useState<string | null>(null)
-  const [showAddColumn, setShowAddColumn] = React.useState(false)
+
   const [moveCardMenu, setMoveCardMenu] = React.useState<{
     card: Card
     sourceColumnId: string
@@ -184,17 +184,6 @@ export function KanbanBoard({
       onUpdateCard?.(cardId, content.trim())
     }
     setEditingCard(null)
-  }
-
-  const handleAddColumn = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const title = formData.get('columnTitle') as string
-    if (title.trim()) {
-      onAddColumn?.(title.trim())
-      setShowAddColumn(false)
-      e.currentTarget.reset()
-    }
   }
 
   // Long press handlers
