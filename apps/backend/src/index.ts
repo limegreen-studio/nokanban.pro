@@ -24,7 +24,7 @@ app.use(
       'http://localhost:5173',
       'http://localhost:3000',
       'https://nokanban.vercel.app',
-      'https://nokanban.pro',
+      'https://nokn.pro',
     ],
     credentials: true,
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
